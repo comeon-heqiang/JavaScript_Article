@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Document</title>
+</head>
+
+<body>
+  <script>
+    function Parent(val) {
+      this.val = val
+    }
+    Parent.prototype.sayVal = function () {
+      console.log(this.val)
+    }
+
+    /* 
+    1.组合继承
+    优点：构造函数可以传参，不会与父类引用属性共享，可以复用父类的函数
+    缺点：在继承父类函数时调用了父类的构造函数，导致子类的原型上多了不需要的父类属性，造成内存浪费
+    */
+    function Child(val) {
+      Parent.call(this, val)
+    }
+    Child.prototype = new Parent();
+
+    var child1 = new Child('组合继承');
+    child1.sayVal()
+    /* 
+    此时Child构造函数：
+    Child{
+      val:1,
+      __proto__:{ //__proto__=Parent
+        val:undefined,
+        __proto__:Object
+      }
+    }  
+    */
+
+    /*
+    2.寄生组合继承
+      对组合继承进行优化,在继承时不调用构造函数
+    */
+
+    function Child2(val) {
+      Parent.call(this.val)
+    }
+    Child2.prototype = Object.create(Parent.prototype, {
+      constructor: { // 返回创建实例对象的 Object 构造函数的引用  如果不声明，那么实例化对象的constructor === Person
+        value: Child2,
+        configurable: true,
+        enumerable: false,
+        writable: true
+      }
+    })
+
+    /* 
+    3. Class 继承    
+    */
+    class Parent2 {
+      constructor(val) {
+        this.val = val
+      }
+      getValue() {
+        console.log(this.val)
+      }
+    }
+    class Child3 extends Parent2 {
+      constructor(val) {
+        super(val)
+        this.val = val
+      }
+    }
+
+    var childNew = new Child3('class继承')
+    childNew.getValue()
+  </script>
+</body>
+
+</html>

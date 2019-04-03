@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Document</title>
+  <style>
+    /* 弹出框 */
+    .modal-bg {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      z-index: 20;
+      background: rgba(0, 0, 0, .6);
+    }
+
+    .modal-main {
+      display: none;
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      z-index: 21;
+      width: 75%;
+      max-width: 400px;
+      padding: 15px 20px;
+      background: #fff;
+      -webkit-transform: translate(-50%, -40%);
+      transform: translate(-50%, -40%);
+      border-radius: 10px;
+      box-sizing: border-box;
+    }
+
+    .modal-main h2 {}
+
+    .modal-main.show,
+    .modal-bg.show {
+      display: block;
+    }
+
+    .modal-main h3 {
+      text-align: center;
+    }
+
+    .modal-main .modal-close {
+      position: absolute;
+      right: 7px;
+      top: 7px;
+      width: 22px;
+      height: 22px;
+      line-height: 24px;
+      font-size: 15px;
+      font-weight: 700;
+      color: #fff;
+      text-align: center;
+      background: rgba(0, 0, 0, .7);
+      border-radius: 50%;
+      cursor: pointer;
+    }
+
+    .modal-main form input,
+    .modal-main form textarea {
+      display: block;
+      width: 100%;
+      margin-bottom: 10px;
+      box-sizing: border-box;
+      padding: 0 10px;
+      line-height: 30px;
+      border: 1px solid #d8d8d8;
+      resize: none;
+    }
+
+    .modal-main textarea {
+      height: 100px
+    }
+
+    .modal-main input[type='submit'] {
+      width: 45%;
+      margin: 0 auto;
+      background: #17bed2;
+      border: 0;
+      color: #fff;
+      padding: 10px 0;
+      font-size: 16px;
+      line-height: 1;
+      border-radius: 5px;
+    }
+  </style>
+</head>
+
+<body>
+  <!--========== 轮播结束 ==========-->
+  <p class="btn-show-modal">弹出框</p>
+  <!-- 弹出框 -->
+  <div class="modal-bg" id="modal-bg"></div>
+  <div class="modal-main" id="modal-main">
+    <h2>加盟咨询</h2>
+    <span class="modal-close" id="modal-close">X</span>
+    <form id="liulanform" action="http://contact.xiaguo.com.cn/message/orderok8853.asp" method="post" target="_self">
+      <input type="hidden" id="lailu" name="lailu" value="" class="source">
+      <input type="hidden" id="tel" name="tel" value="百分茶">
+      <input type="hidden" id="address" name="address" value="茶饮">
+      <input type="hidden" id="qudao" name="qudao" value="bb7666d5-7999-4eb5-919b-2ed836a69233">
+      <input type="hidden" id="pid" name="p_id" value="a8c89c53-cd78-48c4-837e-ba2a3dcc9b97">
+      <input name="consignee" id="consignee" type="text" placeholder="姓名">
+      <input name="mobile" class="phone" type="number" placeholder="电话号码">
+      <textarea name="user_note" id="user_note" rows="6" placeholder="留言"></textarea>
+      <input name="submit" id="submit" class="submit" type="submit" value="提交">
+    </form>
+  </div>
+
+  <script src="./modal.js"></script>
+</body>
+
+</html>

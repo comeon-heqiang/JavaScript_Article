@@ -1,8 +1,8 @@
 .DS_Store
 node_modules/
-/dist/
-/test/
-/service/
+dist/
+service/
+面试题/
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*

@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Document</title>
+</head>
+
+<body>
+  <script>
+    // 使用到了组合函数，运用了函数的高阶性等  
+    const compose = (...fns) => value => fns.reverse().reduce((acc, fn) => fn(acc),
+      value) // 相当于 documentWrite(createNode(setText('hi~ godkun')))
+
+
+    const documentWrite = document.write.bind(document)
+    const createNode = function (text) {
+      return '<h1>' + text + '</h1>'
+    }
+    const setText = msg => msg
+
+    const printMessage = compose(
+      documentWrite,
+      createNode,
+      setText
+    )
+
+    printMessage('hi~ godkun')
+
+
+    let arr = [1, 3, 2, 4, 5]
+
+    function fun(arr) {
+      let arrS = arr.slice();
+      let result = arrS.reverse()
+      console.log('result', result)
+      console.log('arr', arr)
+    }
+    fun(arr)
+  </script>
+</body>
+
+</html>

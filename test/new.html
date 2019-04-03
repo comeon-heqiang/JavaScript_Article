@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Document</title>
+</head>
+
+<body>
+  <script>
+    function Person(name) {
+      this.name = name
+    }
+    Person.prototype.sayName = function () {
+      console.log(this.name)
+    }
+
+    function myNew(o, arg) {
+      var obj = Object.assign({}, o.prototype);
+      var result = o.call(obj, arg);
+      return result instanceof Object ? result : obj
+    }
+    var obj = myNew(Person, 'he')
+
+
+
+
+
+    var obj = {
+      name: 'b',
+      sayName: function () {
+        console.log(this.name)
+      }
+    }
+    var name = 'a'
+    var f = obj.sayName;
+
+    obj.sayName() // ???
+    f() // ???
+
+
+    var obj = {
+      name: 'b',
+      sayName: () => {
+        console.log(this.name)
+      }
+    }
+    var name = 'a'
+    var f = obj.sayName;
+
+    obj.sayName() // ???
+    f() // ???
+
+  </script>
+</body>
+
+</html>

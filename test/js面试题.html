@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Document</title>
+</head>
+
+<body>
+  <script>
+    // 找出字符串中出现最多的字符以及出现的次数
+    var str = 'aabbcc';
+    var obj = {};
+    // 将字符和出现次数保存在obj中 obj={a:2,b:2,c:2}
+    for (var i = 0; i < str.length; i++) {
+      var item = str[i];
+      if (obj[item]) {
+        obj[item]++
+      } else {
+        obj[item] = 1
+      }
+    }
+    // 如果有多个字符出现次数相同,只会输出最先出现最多的字符 例:aabbcc，只会输出a
+    // var max = {
+    //   char: "",
+    //   num: 0
+    // };
+    // for (var j in obj) {
+    //   if (obj[j] > max.num) {
+    //     max.num = obj[j]
+    //     max.char = j
+    //   }
+    // }
+    // console.log(`"${str}" 中出现最多的字符是 ${max.char}, 出现次数 ${max.num}`)
+
+
+    var max = 0;
+    for (var j in obj) {
+      if (obj[j] > max) {
+        max = obj[j]
+      }
+    }
+    for (var k in obj) {
+      if (obj[k] == max) {
+        console.log(`"${str}" 中出现最多的字符是 ${k}, 出现次数 ${max}`)
+      }
+    }
+  </script>
+</body>
+
+</html>

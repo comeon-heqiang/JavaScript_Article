@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Document</title>
+</head>
+
+<body>
+  <script>
+    let arr = [1, 1, 1, 1, 2, 2, 3, 3, 4, 4];
+    let arr2 = []
+    let resultArr1 = [...new Set(arr)] //[1,2,3,4]
+    let resultArr2 = arr.filter(item => {
+      if (arr2.indexOf(item) < 0) {
+        arr2.push(item)
+      }
+    })
+    arr2; //[1,2,3,4]
+  </script>
+</body>
+
+</html>

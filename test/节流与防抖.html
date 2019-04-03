@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Document</title>
+  <style>
+    body {
+      height: 20000px;
+    }
+  </style>
+</head>
+
+<body>
+  <script>
+    const throFun = () => console.log('throttle');
+    const thro = throttle(throFun, 1000);
+    document.body.onscroll = () => {
+      thro(); // 调用至少间隔 300 毫秒才会触发一次
+    }
+    // 节流
+    function throttle(callback, delay) {
+      var previous = 0;
+      return function () {
+
+        var _this = this;
+        var args = arguments;
+        var now = new Date();
+        //现在的时间-上一次函数运行的时间
+        if (now - previous > delay) {
+          callback.apply(_this, args); //调用函数并绑定上下文环境和传递参数
+          previous = now; //保存函数运行的时间
+        }
+      }
+    }
+
+    // const throFun2 = () => console.log('debounce');
+    // const thro2 = debounce(throFun2, 1000);
+    // document.body.onscroll = () => {
+    //   thro2(); // 若一直调用则不会执行，空闲时间大于 300 毫秒才会执行
+    // }
+
+
+    // //防抖
+    // function debounce(callback, delay) {
+    //   var _this = this;
+    //   var args = arguments;
+    //   var timer = null;
+    //   return function () {
+    //     clearTimeout(timer)
+    //     timer = setTimeout(() => {
+    //       callback.apply(_this, args)
+    //     }, delay)
+    //   }
+    // }
+  </script>
+</body>
+
+</html>

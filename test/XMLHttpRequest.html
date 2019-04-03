@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Document</title>
+</head>
+
+<body>
+  <div id="test">123456</div>
+  <script>
+    var elm = document.getElementById('test')
+    let url = 'http://localhost:3000/api'
+    let url2 = 'http://localhost:3000/info'
+    // 封装ajax
+    $_g = {
+      get: function (url, callback) {
+        xmlHttp2('get', url, '', callback)
+      },
+      post: function (url, data, callback) {
+        xmlHttp2('post', url, data, callback)
+      }
+    }
+
+    function xmlHttp2(method, url, data, callback) {
+      if (method == "post" && !data) {
+        throw new Error("post必须传入data")
+      }
+      if (!url && typeof url !== 'string') {
+        throw new Error("url必须为字符串类型")
+      }
+      if (!callback) {
+        console.log("确定不需要回调函数？")
+        // throw new Error('必须传入回调函数')
+      }
+      var xhr = new XMLHttpRequest() || new ActiveXObject('Microsoft.XMLHTTP')
+      xhr.open(method, url, true);
+      xhr.onreadystatechange = function () {
+        if (this.readyState === 4) {
+          if (this.status === 200) {
+            callback && callback(this.response);
+          } else {
+            callback && callback(this)
+          }
+        }
+      }
+      xhr.send(JSON.stringify(data))
+    }
+    $_g.get(url, function (res) {
+      console.log(res, 'res')
+    })
+    $_g.post(url2, {
+      name: 'he'
+    }, function (res) {
+      console.log(res, 'post')
+    })
+    // function xmlHttp(method, url, data) {
+    //   if (method == 'post' && !data) {
+    //     throw new Error("post提交缺少data")
+    //   }
+    //   if (!url && typeof url !== 'string') {
+    //     throw new Error('参数传递有误，请检查url是否为字符串')
+    //   }
+    //   return new Promise((resolve, reject) => {
+    //     var xhr = new XMLHttpRequest() || new ActiveXObject('Microsoft.XMLHTTP')
+    //     xhr.open(method, url, true)
+    //     xhr.onreadystatechange = function () {
+    //       if (this.readyState === 4) {
+    //         if (this.status === 200) {
+    //           resolve(this.response, this)
+    //         } else {
+    //           reject(this)
+    //         }
+    //       }
+    //     }
+    //     xhr.send(JSON.stringify(data))
+    //   })
+    // }
+
+
+    // $_g.get(url).then(response => {
+    //   let res = JSON.parse(response)
+    //   elm.innerHTML = res.result
+    // }).catch(err => {
+    //   console.log(err, 'err')
+    // })
+
+    // $_g.post(url2, {
+    //   name: 'he',
+    //   age: 25
+    // }).then(res => {
+    //   console.log(res)
+    // }).catch(err => {
+    //   console.log(err)
+    // })
+
+  </script>
+</body>
+
+</html>
