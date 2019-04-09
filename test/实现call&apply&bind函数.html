@@ -15,8 +15,6 @@
       if (typeof this !== 'function') {
         throw new Error('必须为函数')
       }
-      console.log(arguments)
-      // console.log(context,'context')
       context = context || window
       context.fn = this
       const arg = [...arguments].slice(1)
@@ -51,10 +49,10 @@
       this.name = name
       this.age = age
 
-      return {
-        name: this.name,
-        age: this.age
-      }
+      // return {
+      //   name: this.name,
+      //   age: this.age
+      // }
     }
     var obj = {
       name: 'he',
@@ -62,15 +60,42 @@
         return this.name
       }
     }
-    var myCallResult = Person.myCall(obj, 'qiang', 26)
-    console.log(myCallResult, 'myCall结果')
-    var myApplyResult = Person.myApply(obj, ['qiang2', 30])
-    console.log(myApplyResult, 'myApply运行结果')
+    // var myCallResult = Person.myCall(obj, 'qiang', 26)
+    // console.log(myCallResult, 'myCall结果')
+    // var myApplyResult = Person.myApply(obj, ['qiang2', 30])
+    // console.log(myApplyResult, 'myApply运行结果')
 
-    var fun1 = obj.sayName;    
-    var result11=fun1.bind(obj)
-    console.log(result11(),'bind')
+    // var fun1 = obj.sayName;
+    // var result11 = fun1.bind(obj, 'he', 35)
+    // console.log(result11(), 'bind')
+
     //实现bind Person.sayName
+    // Function.prototype.myBind = function (context) {
+    //   if (typeof this !== 'function') {
+    //     throw new TypeError('必须为函数')
+    //   }
+    //   context = context || window
+    //   const arg = [...arguments].slice(1)
+    //   const that = this
+    //   return function () {
+    //     return that.apply(context, [...arg])
+    //   }
+    // }
+    // let result1 = Person.myBind(obj)
+    // console.log(result1())
+
+
+
+    function create() {
+      let obj = {}
+      let Con = [].shift.call(arguments)
+      console.log(Con,'con')
+      obj.__proto__ = Con.prototype
+      let result = Con.apply(obj, arguments)
+      return result instanceof Object ? result : obj
+    }
+    var obj1 = create(Person, 'he', 25)
+    console.log(obj1)
   </script>
 </body>
 
