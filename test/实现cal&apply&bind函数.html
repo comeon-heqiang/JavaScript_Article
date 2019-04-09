@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>实现call、apply、bind函数</title>
+</head>
+
+<body>
+  <script>
+    // 实现call函数
+    Function.prototype.myCall = function (context) {
+      if (typeof this !== 'function') {
+        throw new Error('必须为函数')
+      }
+      console.log(arguments)
+      // console.log(context,'context')
+      context = context || window
+      context.fn = this
+      const arg = [...arguments].slice(1)
+      const result = context.fn(...arg)
+      delete context.fn
+      return result
+    }
+    Function.prototype.myApply = function (context) {
+      if (typeof this !== 'function') {
+        throw new Error('必须为函数')
+      }
+      // 如果传入上下文参数，那么为全局上下文
+      context = context || window
+      // 将函数添加到上下文上， 例 假如context为obj={name:"he"},context.fn将函数添加到obj对象上,此时obj={name:"he",Person:function(){...})
+      context.fn = this
+      // 取得传入的参数
+      const reuslt2 = null;
+      // 除上下文环境外，是否还有参数
+      if (arguments[1]) {
+        // 调用函数，取得返回结果
+        result2 = context.fn(...arguments[1])
+      } else {
+        result2 = context.fn()
+      }
+      // 删除上下文上的方法
+      delete context.fn
+      // 返回结果
+      return result2
+    }
+
+    function Person(name, age) {
+      this.name = name
+      this.age = age
+
+      return {
+        name: this.name,
+        age: this.age
+      }
+    }
+    var obj = {
+      name: 'he',
+      sayName: function () {
+        return this.name
+      }
+    }
+    var myCallResult = Person.myCall(obj, 'qiang', 26)
+    console.log(myCallResult, 'myCall结果')
+    var myApplyResult = Person.myApply(obj, ['qiang2', 30])
+    console.log(myApplyResult, 'myApply运行结果')
+
+    var fun1 = obj.sayName;    
+    var result11=fun1.bind(obj)
+    console.log(result11(),'bind')
+    //实现bind Person.sayName
+  </script>
+</body>
+
+</html>
