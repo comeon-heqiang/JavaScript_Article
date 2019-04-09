@@ -3,3 +3,4 @@
 
  [TOC] 
 ## 1. [原型与原型链](/article_list/原型与原型链.md)
+## 1. [原型与原型链](/article_list/原型与原型链.md)
