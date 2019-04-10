@@ -69,6 +69,32 @@
       联系我们
     </li>
   </ul> -->
+  <script>
+    var arr = [1, 2, 3, 4]
+    var sum = 0;
+    arr.forEach(item => {
+      sum += item
+    })
+    // console.log(sum)
+
+
+    let obj2 = test('http://127.0.0.1:8080/test.html?id=1&name=he')
+    console.log(obj2)
+
+    function test(str) {
+      let obj = {}
+      if (str.indexOf('?') < 0) {
+        return ''
+      }
+      let arr = str.split('?')[1].split('&')
+      for (let i = 0; i < arr.length; i++) {
+        let tmp = arr[i].split('=')
+        obj[tmp[0]] = tmp[1];
+      }
+
+      return obj;
+    }
+  </script>
 </body>
 
 </html>
