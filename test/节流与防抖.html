@@ -14,6 +14,7 @@
 </head>
 
 <body>
+  <input type="text" id="input">
   <script>
     const throFun = () => console.log('throttle');
     const thro = throttle(throFun, 1000);
@@ -37,24 +38,25 @@
     }
 
     // const throFun2 = () => console.log('debounce');
-    // const thro2 = debounce(throFun2, 1000);
-    // document.body.onscroll = () => {
-    //   thro2(); // 若一直调用则不会执行，空闲时间大于 300 毫秒才会执行
-    // }
+    const thro2 = debounce(throFun2, 1000);
+    document.body.onscroll = () => {
+      thro2(); // 若一直调用则不会执行，空闲时间大于 300 毫秒才会执行
+    }
 
 
     // //防抖
-    // function debounce(callback, delay) {
-    //   var _this = this;
-    //   var args = arguments;
-    //   var timer = null;
-    //   return function () {
-    //     clearTimeout(timer)
-    //     timer = setTimeout(() => {
-    //       callback.apply(_this, args)
-    //     }, delay)
-    //   }
-    // }
+    function debounce(callback, delay) {
+      var _this = this;
+      var args = arguments;
+      var timer = null;
+      return function () {
+        clearTimeout(timer)
+        timer = setTimeout(() => {
+          callback.apply(_this, args)
+        }, delay)
+      }
+    }
+
   </script>
 </body>
 

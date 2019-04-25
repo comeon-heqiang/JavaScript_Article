@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Document</title>
+
+  <style>
+    #adv {
+      width: 200px;
+      height: 200px;
+      margin: 200px;
+      background: red;
+    }
+  </style>
+</head>
+
+<body>
+
+  <div id="adv"></div>
+  <script>
+    try {
+      // 显示广告
+      var firstOpen = localStorage.getItem('firstOpen'),
+        adv = document.getElementById("adv"),
+        timer = null,
+        showTimer = 3000;
+      if (!firstOpen) {
+        localStorage.setItem('firstOpen', Date.now())
+        hideAdv()
+      } else {
+        var dateNow = Date.now();
+        if (dateNow - firstOpen > (1000 * 60 * 60)) {
+          hideAdv()
+          localStorage.setItem('firstOpen', Date.now())
+        } else {
+          adv.style.display = 'none'
+        }
+      }
+    } catch (error) {
+      console.error(error)
+    }
+
+    function hideAdv() {
+      timer = setTimeout(() => {
+        adv.style.display = 'none'
+      }, showTimer);
+    }
+
+    function showAdv() {
+      adv.style.display = "block"
+    }
+
+
+    // var obj = {}
+    // var ref = obj
+    // obj.name = 'objectA'
+    // obj = ["one", 'two', 'three']
+    // console.log(ref.name)
+    // console.log(ref.length)
+
+    // var outter = []
+
+    // function closeTest() {
+    //   var array = ['one', 'two', 'three', 'four']
+    //   for (var i = 0; i < array.length; i++) {
+    //     var x = {}
+    //     x.no = i;
+    //     x.text = array[i]
+    //     x.invoke = function () {
+    //       alert(i)
+    //     }
+    //     outter.push(x)
+    //   }
+    // }
+    // closeTest()
+    // outter[0].invoke() // ??? 4
+    // outter[3].invoke() // ??? 4
+
+
+    Number.prototype.add = function (value) {
+      return this.valueOf() + value
+    }
+    Number.prototype.minus = function (value) {
+      return this.valueOf() - value
+    }
+    // console.log((5).add(3).minus(2))
+
+
+
+    //出现次数最多的
+    var paixud = [11, 11, 11, 11, 22, 33, 44, 44, 44, 44, 44, 55, 66, 77];
+    var h = {};
+    var maxnum = 0;
+    var maxele = null;
+    for (var s = 0; s < paixud.length; s++) {
+      var a = paixud[s];
+      h[a] === undefined ? h[a] = 1 : (h[a]++);
+      if (h[a] > maxnum) {
+        maxele = a;
+        maxnum = h[a];
+      }
+    }
+    console.log(maxele);
+  </script>
+</body>
+
+</html>

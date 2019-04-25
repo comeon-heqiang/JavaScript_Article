@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Document</title>
+</head>
+
+<body>
+  <button id="btn-create">
+    创建元素
+  </button>
+  <script>
+    //参考链接 https://juejin.im/post/5bc1ae9be51d450e8b140b0c
+    var a = {
+      name: 'he',
+      b: {
+        age: 25,
+        c: {
+          address: 'xiantao'
+        }
+      }
+    }
+    var b = clone(a)
+    console.log(b)
+
+    // 第一种方法，也是最基础的
+    function clone(obj) {
+      var target = {}
+      for (var k in obj) {
+        if (typeof obj[k] === 'object') {
+          target[k] = clone(obj[k])
+        } else {
+          target[k] = obj[k]
+        }
+      }
+      return target;
+    }
+
+
+    function cloneJSON(source) {
+      return JSON.parse(JSON.stringify(source));
+    }
+    //第三种方法
+    function cloneLoop(x) {
+      const root = {};
+
+      // 栈
+      const loopList = [{
+        parent: root,
+        key: undefined,
+        data: x,
+      }];
+
+      while (loopList.length) {
+        // 深度优先
+        const node = loopList.pop();
+        const parent = node.parent;
+        const key = node.key;
+        const data = node.data;
+
+        // 初始化赋值目标，key为undefined则拷贝到父元素，否则拷贝到子元素
+        let res = parent;
+        if (typeof key !== 'undefined') {
+          res = parent[key] = {};
+        }
+
+        for (let k in data) {
+          if (data.hasOwnProperty(k)) {
+            if (typeof data[k] === 'object') {
+              // 下一次循环
+              loopList.push({
+                parent: res,
+                key: k,
+                data: data[k],
+              });
+            } else {
+              res[k] = data[k];
+            }
+          }
+        }
+      }
+
+      return root;
+    }
+
+    // 第四种方法
+    // 保持引用关系
+    function cloneForce(x) {
+      // =============
+      const uniqueList = []; // 用来去重
+      // =============
+
+      let root = {};
+
+      // 循环数组
+      const loopList = [{
+        parent: root,
+        key: undefined,
+        data: x,
+      }];
+
+      while (loopList.length) {
+        // 深度优先
+        const node = loopList.pop();
+        const parent = node.parent;
+        const key = node.key;
+        const data = node.data;
+
+        // 初始化赋值目标，key为undefined则拷贝到父元素，否则拷贝到子元素
+        let res = parent;
+        if (typeof key !== 'undefined') {
+          res = parent[key] = {};
+        }
+
+        // =============
+        // 数据已经存在
+        let uniqueData = find(uniqueList, data);
+        if (uniqueData) {
+          parent[key] = uniqueData.target;
+          continue; // 中断本次循环
+        }
+
+        // 数据不存在
+        // 保存源数据，在拷贝数据中对应的引用
+        uniqueList.push({
+          source: data,
+          target: res,
+        });
+        // =============
+
+        for (let k in data) {
+          if (data.hasOwnProperty(k)) {
+            if (typeof data[k] === 'object') {
+              // 下一次循环
+              loopList.push({
+                parent: res,
+                key: k,
+                data: data[k],
+              });
+            } else {
+              res[k] = data[k];
+            }
+          }
+        }
+      }
+
+      return root;
+    }
+
+    function find(arr, item) {
+      for (let i = 0; i < arr.length; i++) {
+        if (arr[i].source === item) {
+          return arr[i];
+        }
+      }
+
+      return null;
+    }
+
+
+
+    // 创建指定深度与广度的对象
+    function createData(deep, breadth) {
+      var data = {};
+      var temp = data; // temp=data={}
+
+      for (var i = 0; i < deep; i++) { // i<1        
+        temp = temp['data'] = {}; // temp=temp['data']={} data['data']={}
+        for (var j = 0; j < breadth; j++) { // j<3
+          temp[j] = j; //temp[0]=0 temp[1]=1 temp[2]=2
+        }
+      }
+
+      return data;
+    }
+    let data1 = createData(100000)
+
+
+    document.getElementById("btn-create").addEventListener("click", () => {
+      createElm(100)
+    }, false)
+
+    function createElm(count) {
+      var body = document.getElementsByTagName("body")[0]
+      for (let index = 0; index < count; index++) {
+        var elm = document.createElement("div")
+        var text = document.createTextNode(index)
+        elm.appendChild(text)
+        body.appendChild(elm)
+      }
+    }
+  </script>
+</body>
+
+</html>

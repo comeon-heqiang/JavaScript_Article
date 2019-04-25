@@ -17,7 +17,6 @@
       list-style: none
     }
 
-    ul {}
 
     li {
       display: inline-block
@@ -94,6 +93,47 @@
 
       return obj;
     }
+
+    function Person(name) {
+      this.name = name
+    }
+    Person.prototype.sayName = function () {
+      console.log(this.name)
+    }
+
+    function Children(name) {
+      Person.call(this, name)
+    }
+    Children.prototype = new Person()
+    Children.prototype.constructor = Children
+    var child1 = new Children('he')
+    child1.sayName()
+
+    // 
+    Function.prototype.myCall = function (context) {
+      if (typeof this !== 'function') {
+        throw new Error('只能函数调用')
+      }
+      context = context || window
+      context.fn = this
+      let arg = [...arguments].slice(1)
+      let result = context.fn(...arg)
+      delete context.fn
+      return result
+    }
+    var objCall = {}
+    Person.myCall(objCall, 'he')
+
+
+
+    function checkNumber(theObj) {
+      var reg = /^[0-9]+\.?[0-9]*$/;
+      if (reg.test(theObj)) {
+        return true
+      }
+      return false
+    }
+    checkNumber('123456')
   </script>
 </body>
 
