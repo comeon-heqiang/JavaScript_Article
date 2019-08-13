@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>发布-订阅模式</title>
+</head>
+
+<body>
+  <script>
+    const {
+      log
+    } = console;
+    /*   var salesOffices = {} //定义售楼处
+      salesOffices.cache = [] // 缓存列表，存放订阅者的回调函数
+      salesOffices.listen = function (key, fn) { //添加订阅者进缓存
+        if (!this.cache[key]) {
+          this.cache[key] = []
+        }
+        this.cache[key].push(fn)
+        // this.cache.push(fn)
+      }
+      salesOffices.trigger = function () { // 通知订阅者
+        var key = [].shift.call(arguments),
+          fns = this.cache[key];
+        if (!fns && fns.length === 0) {
+          return false
+        }
+        for (var i = 0, fn; fn = fns[i++];) {
+          fn.apply(this, arguments)
+        }
+      }
+      // 添加订阅者
+      salesOffices.listen('squareMeter88', function (price) { //小明订阅消息
+        log(`小明-价格:${price}`)
+      })
+      salesOffices.listen('squareMeter110', function (price) { //小红订阅消息
+        log(`小红-价格:${price}`)
+      })
+      salesOffices.trigger('squareMeter88', 2000000); // 发布 88 平方米房子的价格
+      salesOffices.trigger('squareMeter110', 3000000); // 发布 110 平方米房子的价格
+
+
+
+
+
+      //  公用方法 
+      var event = {
+        cache: [],
+        listen: function (key, fn) {
+          if (!this.cache[key]) {
+            this.cache[key] = []
+          }
+          this.cache[key].push(fn)
+        },
+        trigger: function () {
+          var key = [].shift.call(arguments)
+          fns = this.cache[key];
+          if (!fns && fns.length === 0) {
+            return false
+          }
+          for (var i = 0; fn = fns[i++];) {
+            fn.apply(this, arguments)
+          }
+        },
+        remove: function (key, fn) {
+          var fns = this.cache[key];
+          if (!fns) {
+            return false
+          }
+          if (!fn) { //如果没有传入回调函数，则取消所有对应的回调函数
+            fns && (fns.length = 0)
+          } else {
+            for (var l = fns.length; l >= 0; l--) {
+              var _fn = fns[l]
+              if (_fn === fn) {
+                fns.splice(l, 1)
+              }
+            }
+          }
+        }
+      }
+      log('----------------------------')
+      var installEvent = function (obj) {
+        for (var i in event) {
+          obj[i] = event[i]
+        }
+      }
+      var s1 = {}
+      installEvent(s1)
+      s1.listen('squareMeter88', fn1 = function (price) { //小明订阅消息
+        log(`小明-价格:${price}`)
+      })
+      s1.trigger("squareMeter88", 200)
+      s1.remove('squareMeter88', fn1)
+      s1.trigger("squareMeter88", 200) */
+
+    // 全局的发布-订阅模式
+    var Event = (function () {
+      var cacheList = {},
+        trigger,
+        remove,
+        listen;
+      trigger = function () {
+        var key = [].shift.call(arguments)
+        fns = cacheList[key];
+        if (!fns && fns.length === 0) {
+          return false
+        }
+        for (var i = 0, fn; fn = fns[i++];) {
+          fn.apply(this, arguments)
+        }
+
+      }
+      listen = function (key, fn) {
+        if (!cacheList[key]) {
+          cacheList[key] = []
+        }
+        cacheList[key].push(fn)
+      }
+      remove = function (key, fn) {
+        var fns = cacheList[key];
+        if (!fns) {
+          return false;
+        }
+        if (fn) {
+          fns && (fns.length = 0)
+        } else {
+          for (var l = fns.length; l >= 0; l--) {
+            var _fn = fns[l]
+            if (_fn === fn) {
+              fns.splice(l, 1)
+              return false
+            }
+          }
+        }
+      }
+      return {
+        listen: listen,
+        trigger: trigger,
+        remove: remove
+      }
+    })()
+    var fn1 = function (price) {
+      console.log(`价格:${price}`)
+    }
+    Event.listen('squareMeter88', fn1)
+    Event.trigger('squareMeter88', 20000)
+    Event.remove('squareMeter88', fn1)
+    Event.trigger('squareMeter88', 20000)
+   
+  </script>
+</body>
+
+</html>

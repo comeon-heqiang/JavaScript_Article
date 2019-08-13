@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>命令模式</title>
+  <style>
+    .container {
+      position: relative;
+      padding-top: 70px;
+    }
+
+    .ball {
+      position: absolute;
+      top: 0;
+      width: 50px;
+      height: 50px;
+      border-radius: 50%;
+      background-color: red;
+    }
+  </style>
+</head>
+
+<body>
+  <button id="button1">按钮1</button>
+  <button id="button2">按钮2</button>
+  <button id="button3">按钮3</button>
+  <div class="container">
+    <div class="ball" id="ball"></div>
+    <input type="text" id="pos" placeholder="输入小球移动的距离">
+    <button id="btn_move">点击移动</button>
+    <button id="cancelBtn">撤销命令</button>
+  </div>
+  <script>
+    var tween = {
+      linear: function (t, b, c, d) { // t:动画已消耗的时间 b:小球原始位置 c:小球目标位置 d:动画持续总时间
+        return c * t / d + b;
+      },
+      easeIn: function (t, b, c, d) {
+        return c * (t /= d) * t + b;
+      },
+      strongEaseIn: function (t, b, c, d) {
+        return c * (t /= d) * t * t * t * t + b;
+      },
+      strongEaseOut: function (t, b, c, d) {
+        return c * ((t = t / d - 1) * t * t * t * t + 1) + b;
+      },
+      sineaseIn: function (t, b, c, d) {
+        return c * (t /= d) * t * t + b;
+      },
+      sineaseOut: function (t, b, c, d) {
+        return c * ((t = t / d - 1) * t * t + 1) + b;
+      }
+    };
+    var Animate = function (dom) {
+      this.dom = dom; // 进行运动的 dom 节点
+      this.startTime = 0; // 动画开始时间
+      this.startPos = 0; // 动画开始时，dom 节点的位置，即 dom 的初始位置
+      this.endPos = 0; // 动画结束时，dom 节点的位置，即 dom 的目标位置
+      this.propertyName = null; // dom 节点需要被改变的 css 属性名
+      this.easing = null; // 缓动算法
+      this.duration = null; // 动画持续时间
+    };
+    // 启动动画
+    Animate.prototype.start = function (propertyName, endPos, duration, easing) { // left 500 1000 strongEaseOut
+      this.startTime = +new Date; // 动画启动时间
+      this.startPos = this.dom.getBoundingClientRect()[propertyName]; // dom 节点初始位置
+      this.propertyName = propertyName; // dom 节点需要被改变的 CSS 属性名
+      this.endPos = endPos; // dom 节点目标位置
+      this.duration = duration; // 动画持续事件
+      this.easing = tween[easing]; // 缓动算法
+      var self = this;
+      var timeId = setInterval(function () { // 启动定时器，开始执行动画
+        if (self.step() === false) { // 如果动画已结束，则清除定时器
+          clearInterval(timeId);
+        }
+      }, 19);
+    };
+    Animate.prototype.step = function () {
+      var t = +new Date; // 取得当前时间
+      if (t >= this.startTime + this.duration) { // (1) 
+        this.update(this.endPos); // 更新小球的 CSS 属性值
+        return false;
+      }
+      var pos = this.easing(t - this.startTime, this.startPos,
+        this.endPos - this.startPos, this.duration);
+      // pos 为小球当前位置
+      this.update(pos); // 更新小球的 CSS 属性值
+    };
+    Animate.prototype.update = function (pos) {
+      this.dom.style[this.propertyName] = pos + 'px';
+    };
+
+    const {
+      log
+    } = console;
+    var btn1 = document.getElementById("button1"),
+      btn2 = document.getElementById("button2"),
+      btn3 = document.getElementById("button3");
+
+    function setCommand(btn, command) {
+      btn.onclick = function () {
+        command.execute()
+      }
+    }
+    var menuBar = {
+      refresh: function () {
+        log('刷新')
+      },
+      delete: function () {
+        log('删除')
+      }
+    }
+    var command = function (revice) {
+      this.revice = revice
+    }
+    command.prototype.execute = function () {
+      this.revice.refresh()
+    }
+    var mennuBarCommand = new command(menuBar)
+    setCommand(btn1, mennuBarCommand)
+
+    /* 小球移动 */
+    var btn_move = document.getElementById('btn_move'),
+      btn_cacle = document.getElementById('cancelBtn'),
+      pos = document.getElementById('pos'),
+      ball = document.getElementById("ball");
+    // 小球移动命令
+    var MoveCommand = function (revice, pos) {
+      this.revice = revice
+      this.pos = pos
+      this.oldPos = null
+    }
+    MoveCommand.prototype.execute = function () {
+      this.revice.start('left', this.pos, 1000, 'strongEaseOut')
+      this.old=this.revice.dom.getBoundingClientRect()[this.revice.propertyName]
+    }
+    MoveCommand.prototype.undo=function(){
+      this.revice.start('left',this.oldPos,1000,'strongEaseOut')
+    }
+    var moveCommand;
+    // 小球点击
+    btn_move.onclick = function () {
+      var animate = new Animate(ball)
+      moveCommand = new MoveCommand(animate, pos.value)
+      moveCommand.execute()
+    }
+    btn_cacle.onclick=function(){
+      moveCommand.undo()
+    }
+  </script>
+</body>
+
+</html>

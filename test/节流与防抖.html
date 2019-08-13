@@ -25,7 +25,6 @@
     function throttle(callback, delay) {
       var previous = 0;
       return function () {
-
         var _this = this;
         var args = arguments;
         var now = new Date();
@@ -37,7 +36,7 @@
       }
     }
 
-    // const throFun2 = () => console.log('debounce');
+    const throFun2 = () => console.log('debounce');
     const thro2 = debounce(throFun2, 1000);
     document.body.onscroll = () => {
       thro2(); // 若一直调用则不会执行，空闲时间大于 300 毫秒才会执行
@@ -56,7 +55,20 @@
         }, delay)
       }
     }
-
+  
+    //节流
+    function throttle2(callback, delay) {
+      let prevDate = 0
+      return function () {
+        let _this = this;
+        let args = arguments;
+        let now = Date.now()
+        if (now > prevDate > delay) {
+          callback.apply(_this, args)
+          prevDate = now
+        }
+      }
+    }
   </script>
 </body>
 

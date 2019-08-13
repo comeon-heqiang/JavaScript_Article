@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>宏命令</title>
+</head>
+
+<body>
+  <script>
+    const {
+      log
+    } = console;
+    var closeDoorCommand = {
+      execute: function () {
+        log('关门')
+      }
+    }
+    var openPcCommand = {
+      execute() {
+        log('开电脑')
+      }
+    }
+    var loginQQComand = {
+      execute() {
+        log("登录QQ")
+      }
+    }
+    var MacroCommand = function () {
+      return {
+        commandList: [],
+        add: function (command) {
+          this.commandList.push(command)
+        },
+        execute: function () {
+          for (var i = 0, command; command = this.commandList[i++];) {
+            command.execute()
+          }
+        },
+        undo: function () {
+          for (var l = this.commandList.length; l > 0; l--) {
+            var command=this.commandList.pop();
+            command.execute()
+          }
+        }
+      }
+    }
+    var macroCommand = MacroCommand();
+    macroCommand.add(closeDoorCommand)
+    macroCommand.add(openPcCommand)
+    macroCommand.add(loginQQComand)
+    macroCommand.execute() //执行所有命令
+    log('----------------撤销命令-----------------------')
+    macroCommand.undo()
+  </script>
+</body>
+
+</html>

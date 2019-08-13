@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Document</title>
+</head>
+
+<body>
+  <script>
+    const {
+      log
+    } = console
+
+    function each(arr, fn) {
+      for (var i = 0, l = arr.length; i < l; i++) {
+        if (fn.call(arr[i], i, arr[i]) === false) {
+          break
+        }
+
+      }
+    }
+    each([1, 2, 3, 4], function (i, n) {
+      if (n > 3) {
+        return false
+      }
+      console.log('each输出:' + i, n)
+    })
+
+
+    var iterator = function (arr) {
+      var index = 0;
+      var next = function () {
+        index++
+      }
+      var isDone = function () {
+        return index >= arr.length
+      }
+      var getItem = function () {
+        return arr[index]
+      }
+      return {
+        next: next,
+        isDone: isDone,
+        getItem: getItem
+      }
+    }
+    var iterator1 = iterator(['heqiang', '26', 'HuBei'])
+    var iterator2 = iterator(['heqiang', '26', 'HuBei'])
+
+    function compare(iterator1, iterator2) {
+      while (!iterator1.isDone() && !iterator2.isDone()) {
+        if (iterator1.getItem() !== iterator2.getItem()) {
+          throw new Error("不相等")
+        }
+        iterator1.next()
+        iterator2.next()
+      }
+      log("完全相等")
+    }
+    compare(iterator1, iterator2)
+
+
+    // 反序each
+    function reverseEach(arr, fn) {
+      for (var l = arr.length; l >= 0; l--) {
+        fn.call(arr[l], l, arr[l])
+      }
+    }
+    reverseEach(['heqiang', '26', 'HuBei'], function (i, n) {
+      log(i, n)
+    })
+
+    var getActiveUploadObj = function () {
+      try {
+        return new ActiveXObject("TXFTNActiveX.FTNUpload"); // IE 上传控件
+      } catch (e) {
+        return false;
+      }
+    };
+    var getFlashUploadObj = function () {
+      if (supportFlash()) { // supportFlash 函数未提供
+        var str = '<object type="application/x-shockwave-flash"></object>';
+        return $(str).appendTo($('body'));
+      }
+      return false;
+    };
+    var getFormUpladObj = function () {
+      var str = '<input name="file" type="file" class="ui-file"/>'; // 表单上传
+      return $(str).appendTo($('body'));
+    };
+    var iteratorUploadObj = function () {
+      for (var i = 0, fn; fn = arguments[i++];) {
+        var upload = fn();
+        if (upload !== false) {
+          return upload
+        }
+      }
+    }
+    iteratorUploadObj(getActiveUploadObj, getFlashUploadObj, getFormUpladObj)
+  </script>
+</body>
+
+</html>

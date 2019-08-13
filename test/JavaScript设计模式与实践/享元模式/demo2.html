@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>享元模式</title>
+</head>
+
+<body>
+  <script>
+    const {
+      log
+    } = console;
+    var id = 0;
+
+    function startUpload(uploadType, files) {
+      for (var i = 0, file; file = files[i++];) {
+        var upload = new Upload(uploadType, file.fileName, file.fileSize);
+        upload.init(id++)
+      }
+
+    }
+
+    function Upload(uploadType, fileName, fileSize) {
+      this.fileName = fileName;
+      this.fileSize = fileSize;
+      this.dom = null
+
+    }
+    Upload.prototype.init = function (id) {
+      var that = this;
+      this.dom = document.createElement('div')
+      this.dom.innerHTML =
+        `文件名：${this.fileName} 文件大小:${this.fileSize} <button class="delFile">删除</button>`;
+      this.dom.querySelector('.delFile').onclick = function () {
+        that.delFile()
+      }
+      document.body.append(this.dom)
+    }
+    Upload.prototype.delFile = function () {
+      if (this.fileSize < 3000) {
+        this.dom.parentNode.removeChild(this.dom)
+      } else {
+        if (window.confirm('确定删除' + this.fileName)) {
+          this.dom.parentNode.removeChild(this.dom)
+        }
+      }
+    }
+    startUpload('plugin', [{
+        fileName: '1.txt',
+        fileSize: 1000
+      },
+      {
+        fileName: '2.html',
+        fileSize: 3000
+      },
+      {
+        fileName: '3.txt',
+        fileSize: 5000
+      }
+    ]);
+  </script>
+</body>
+
+</html>

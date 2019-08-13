@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Document</title>
+</head>
+
+<body>
+  <script>
+    const {
+      log
+    } = console;
+
+    function Folder(name) {
+      this.name = name
+      this.fileList = []
+      this.parent = null
+    }
+    Folder.prototype.add = function (file) {
+      file.parent = this;
+      this.fileList.push(file)
+    }
+    Folder.prototype.scan = function () {
+      log('开始扫描文件夹:' + this.name)
+      for (var i = 0, file; file = this.fileList[i++];) {
+        file.scan()
+      }
+    }
+
+    function File(name) {
+      this.name = name
+    }
+    // 移除
+    File.prototype.remove = function () {
+      if (!this.parent) {
+        return
+      }
+      for (var files = this.parent.fileList, l = files.length - 1; l >= 0; l--) {
+        var file = files[l];
+        if (file === this) {
+          files.splice(l, 1)
+        }
+      }
+      log('移除文件')
+    }
+    File.prototype.scan = function () {
+      log('开始扫描文件 ', this.name)
+    }
+    var folder = new Folder('学习资料');
+
+    var folder1 = new Folder('JavaScript');
+    var folder2 = new Folder('jQuery');
+
+    var file1 = new File('JavaScript 设计模式与开发实践');
+    var file2 = new File('精通 jQuery');
+    var file3 = new File('重构与模式')
+
+    folder1.add(file1);
+    folder2.add(file2);
+
+    folder.add(folder1);
+    folder.add(folder2);
+    folder.add(file3);
+    file1.remove()
+    folder.scan()
+  </script>
+</body>
+
+</html>

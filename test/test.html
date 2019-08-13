@@ -51,13 +51,21 @@
       border-right: 100px solid transparent;
       border-bottom: 202px solid green;
     }
+    
   </style>
 </head>
 
 <body>
   <div class="test">
   </div>
-  <!-- <ul>
+  <form action="" autocomplete="off"></form>
+  日期选择器：<input type="date" name="bday">
+  <input type="datetime-local" name="bdaytime">
+  eamil:<input type="email" name="email" autocomplete="off"><br>
+  search:<input type="search" name="googleengine"><br>
+  time:<input type="time" name="usr_time"><br>
+  tel:<input type="tel" name="mytel">
+  <ul id="test">
     <li>
       首页
     </li>
@@ -67,16 +75,8 @@
     <li>
       联系我们
     </li>
-  </ul> -->
+  </ul>
   <script>
-    var arr = [1, 2, 3, 4]
-    var sum = 0;
-    arr.forEach(item => {
-      sum += item
-    })
-    // console.log(sum)
-
-
     let obj2 = test('http://127.0.0.1:8080/test.html?id=1&name=he')
     console.log(obj2)
 
@@ -134,6 +134,49 @@
       return false
     }
     checkNumber('123456')
+
+
+    // 事件委托
+    var ul1 = document.getElementById("test")
+    // ul1.addEventListener('click', function (e) {
+    //   console.log(e.target.innerText)
+    // }, false)
+    var elms = ul1.getElementsByTagName("li")
+    for (var i = 0; i < elms.length; i++) {
+      elms[i].addEventListener('click', function () {
+        console.log(this.innerText)
+      }, false)
+    }
+    var createLi = document.createElement("li")
+    createLi.innerHTML = "动态添加"
+    ul1.appendChild(createLi)
+
+
+
+    // 深拷贝
+    var obj = {
+      name: 'he',
+      info: {
+        age: 25,
+        gender: 1
+      }
+    }
+    var obj3 = cloneObj(obj)
+
+    function cloneObj(obj) {
+      var newObj = {}
+      for (var k in obj) {
+        if (typeof obj[k] === "object") {
+          newObj[k] = cloneObj(obj[k])
+        } else {
+          newObj[k] = obj[k]
+        }
+      }
+      return newObj
+    }
+    obj.info.age = "he2"
+    console.log(obj3)
+    
   </script>
 </body>
 

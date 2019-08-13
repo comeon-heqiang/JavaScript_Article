@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>模板方法模式 </title>
+</head>
+
+<body>
+  <script>
+    const {
+      log
+    } = console;
+    // 抽象父类
+    var Beverage = function () {
+
+    }
+    Beverage.prototype.boilWater = function () {
+      log('把水煮沸')
+    }
+    // 不同的行为 交给子类重写
+    Beverage.prototype.brew = function () {
+      throw new Error('必须重写')
+    }
+    // 不同的行为 交给子类重写
+    Beverage.prototype.pourInCup = function () {
+      throw new Error('必须重写')
+    }
+    // 不同的行为 交给子类重写
+    Beverage.prototype.addCondiments = function () {
+      throw new Error('必须重写')
+    }
+    Beverage.prototype.customerWantsCondiments = function () {
+      return true;
+    }
+    Beverage.prototype.init = function () {
+      this.boilWater()
+      this.brew()
+      this.pourInCup()
+      if (this.customerWantsCondiments()) {
+        this.addCondiments()
+      }
+    }
+    var Coffee = function () {
+
+    }
+    Coffee.prototype = new Beverage();
+    Coffee.prototype.brew = function () {
+      log('泡咖啡')
+    }
+    Coffee.prototype.pourInCup = function () {
+      log('将咖啡倒进杯子里')
+    }
+    Coffee.prototype.addCondiments = function () {
+      log('添加糖和牛奶')
+    }
+    var CoffeeWithHook = function () {
+
+    }
+    CoffeeWithHook.prototype = new Beverage();
+    CoffeeWithHook.prototype.brew = function () {
+      log('泡咖啡')
+    }
+    CoffeeWithHook.prototype.pourInCup = function () {
+      log('将咖啡倒进杯子里')
+    }
+    CoffeeWithHook.prototype.addCondiments = function () {
+      log('添加糖和牛奶')
+    }
+    CoffeeWithHook.prototype.customerWantsCondiments=function(){
+      return window.confirm('需要加糖和牛奶吗？')
+    }
+    var coffee1 = new Coffee()  
+    coffee1.init()
+    var coffee2=new CoffeeWithHook()
+    coffee2.init()
+  </script>
+</body>
+
+</html>

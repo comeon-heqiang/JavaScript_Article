@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>单例模式</title>
+</head>
+
+<body>
+  <button id="button1">惰性加载</button>
+  <div id="div1">单例模式</div>
+  <script>
+    var createDiv = function (html) {
+      this.html = html
+      this.init()
+    }
+    createDiv.prototype.init = function () {
+      var div = document.createElement("div")
+      div.innerHTML = this.html
+      document.body.append(div)
+    }
+
+    var proxyCreateDiv = (function () {
+      var instance;
+      return function (html) {
+        if (instance) {
+          return instance
+        }
+        instance = new createDiv(html)
+        return instance
+      }
+    })()
+    var a = new proxyCreateDiv('classA')
+    var b = new proxyCreateDiv('classB')
+    var c = new createDiv("classC")
+
+    // 全局变量
+    var myApp = {}
+    myApp.nameSpace = function (name) {
+      var objName = name.split('.');
+      var current = myApp;
+      for (var i in objName) {
+        if (!current[objName[i]]) {
+          current[objName[i]] = {}
+        }
+        current = current[objName[i]]
+      }
+    }
+    myApp.nameSpace('name')
+    myApp.nameSpace('info.age')
+    console.dir(myApp)
+
+    // 惰性单例模式
+    var getSinger = (function (fn) {
+      var result;
+      return function () {
+        return result || (result = fn.apply(this, arguments))
+      }
+    })
+    var createLoginLayer = function () {
+      console.log('执行')
+      var div = document.createElement('div')
+      div.innerHTML = '我是登录浮窗'
+      div.style.display = "none"
+      document.body.append(div)
+      return div
+    }
+    var createSingleLoginLayer = getSinger(createLoginLayer)
+    var button1 = document.getElementById("button1")
+    button1.addEventListener('click', function () {
+      var createElm = createSingleLoginLayer()
+      createElm.style.display = 'block'
+    }, false)
+
+    var div1 = document.getElementById('div1')
+    var bindEvent = getSinger(function () {
+      div1.onclick = function () {
+        console.log('div执行')
+      }
+      return true
+    })
+
+    function render() {
+      console.log('渲染列表')
+      bindEvent()
+    }
+    render()
+    render()
+    render()
+  </script>
+</body>
+
+</html>

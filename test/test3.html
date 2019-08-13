@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Document</title>
+  <style>
+    body {
+      height: 2000px
+    }
+  </style>
+</head>
+
+<body>
+
+  <script>
+    function debouce(callback, delay) {
+      var _this = this;
+      var timer = null;
+      return function () {
+        clearTimeout(timer)
+        timer= setTimeout(() => {
+            callback.apply(_this,arguments)
+        }, delay);
+      }
+    }
+    function fn1(){
+      console.log('输出')
+    }
+    var de1=debouce(fn1,500)
+   
+
+    function throttle(callback,delay){
+      var prev=0;
+      return function(){
+        var now=Date.now()
+        if(now-prev>delay){
+          callback.apply()
+          prev=Date.now()
+        }
+      }
+    }
+    var t1=throttle(function () {  console.log('节流')},1000)
+    document.body.onscroll=function(){
+      // de1()
+      t1()
+    }
+  </script>
+</body>
+
+</html>

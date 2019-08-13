@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>命令模式-撤销和重做</title>
+</head>
+
+<body>
+  <button id="replay">播放录像</button>
+  <script>
+    const {
+      log
+    } = console
+    // 基本动作
+    var Ryu = {
+      attack: function () {
+        log('攻击');
+      },
+      defense: function () {
+        log('防御');
+      },
+      jump: function () {
+        log('跳跃');
+      },
+      crouch: function () {
+        log('蹲下');
+      }
+    };
+    // 命令对象
+    var makeCommand = function (revice, state) {
+      return function () {
+        revice[state]()
+      }
+    }
+    var commands = {
+      "119": "jump", // W 
+      "115": "crouch", // S 
+      "97": "defense", // A 
+      "100": "attack" // D 
+    };
+    var commandStack = []; // 保存命令的堆栈
+    document.onkeypress = function (e) {
+      var keyCode = e.keyCode,
+        command = makeCommand(Ryu, commands[keyCode]);
+      if (command) {     
+        command()   // 执行命令
+        commandStack.push(command) //将命令保存到堆栈数组
+      }
+    }
+    var btn_replay=document.getElementById('replay')
+    btn_replay.onclick=function(){
+      log('播放录像')
+      var command;
+      while (command=commandStack.shift()) {
+        command()
+      }
+    }
+  </script>
+</body>
+
+</html>

@@ -1,0 +1,25 @@
+{
+  "name": "javascript_article",
+  "version": "1.0.0",
+  "description": "关于JavaScript的文章记录，用于以后复习",
+  "main": "index.js",
+  "directories": {
+    "test": "test"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/comeon-heqiang/JavaScript_Article.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/comeon-heqiang/JavaScript_Article/issues"
+  },
+  "homepage": "https://github.com/comeon-heqiang/JavaScript_Article#readme",
+  "dependencies": {
+    "axios": "^0.19.0"
+  }
+}

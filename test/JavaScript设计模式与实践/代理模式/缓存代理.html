@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>缓存代理</title>
+</head>
+
+<body>
+  <script>
+    const {
+      log
+    } = console;
+    // 计算乘积
+    var mult = function () {
+      var sum = 1;
+      for (var i = 0; i < arguments.length; i++) {
+        sum = sum * arguments[i]
+      }
+      return sum
+    }
+    // 计算累加
+    var plus = function () {
+      var sum = 0;
+      for (var i = 0; i < arguments.length; i++) {
+        sum += arguments[i]
+      }
+      return sum
+    }
+    // 缓存代理工厂
+    var createProxyFactory = (function (fn) {
+      var cache = {};
+      return function () {
+        var arg = [].join.call(arguments, ',')
+        if (cache[arg]) {
+          console.log('代理工厂缓存')
+          return cache[arg]
+        }
+        return cache[arg] = fn.apply(this, arguments)
+      }
+    });
+    var proxyMult = createProxyFactory(mult),
+    proxyPlus = createProxyFactory(plus);
+    console.log(proxyMult(1, 2, 3, 4))
+    console.log(proxyPlus(1, 2, 3, 4))
+    console.log(proxyPlus(1, 2, 3, 4))
+    // 计算乘积代理
+    var proxyComputed = (function () {
+      var cache = {}
+      return function () {
+        var arg = [].join.call(arguments, ',')
+        if (cache[arg]) {
+          log('缓存')
+          return cache[arg]
+        }
+        console.log('计算')
+        return cache[arg] = mult.apply(this, arguments)
+      }
+    })()
+    var proxyAxios = (function () {
+      var cache2 = {};
+      return function (num) {
+        if (cache2[num]) {
+          log('列表缓存')
+          return cache2[num]
+        }
+        log('列表计算')
+        return cache2[num] = axios(num)
+      }
+    })()
+    var page = {
+      '1': {
+        data: '第1页'
+      },
+      '2': {
+        data: '第2页'
+      },
+      '3': {
+        data: '第3页'
+      },
+      '4': {
+        data: '第4页'
+      },
+      '5': {
+        data: '第5页'
+      },
+      '6': {
+        data: '第6页'
+      }
+    }
+
+    function axios(num) {
+      return page[num]
+    }
+    proxyComputed(1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 123, 142345, 543555555555, 444444)
+    proxyComputed(1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 123, 142345, 543555555555, 444444)
+    proxyComputed(1, 2, 3)
+
+    proxyAxios(1)
+    proxyAxios(2)
+    proxyAxios(2)
+  </script>
+</body>
+
+</html>

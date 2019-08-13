@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>职责链模式</title>
+</head>
+
+<body>
+  <script>
+    const {
+      log
+    } = console
+    
+    var order500 = function (orderType, pay, stock) {
+      if (orderType === 1 && pay === true) {
+        log('500 元定金预购，得到 100 优惠券')
+      } else {
+        return 'nextSuccessor'
+      }
+    }
+
+    var order200 = function (orderType, pay, stock) {
+      if (orderType === 2 && pay === true) {
+        log('200 元定金预购，得到 50 优惠券')
+      } else {
+        return 'nextSuccessor'
+      }
+    }
+
+    var orderNormal = function (orderType, pay, stock) {
+      if (stock > 0) {
+        log('普通用户购买，无优惠券')
+      } else {
+        log('库存不足')
+      }
+    }
+ 
+    Function.prototype.after = function (fn) {
+      var self = this;
+      return function () {
+        var ret = self.apply(this, arguments);
+        if (ret === 'nextSuccessor') {
+          return fn.apply(this, arguments);
+        }
+        return ret;
+      }
+    };
+    var order = order500.after(order200).after(orderNormal);    
+    // order(1, true, 500); // 输出：500 元定金预购，得到 100 优惠券
+    // order(2, true, 500); // 输出：200 元定金预购，得到 50 优惠券
+    order(1, false, 500); // 输出：普通购买，无优惠券
+
+    /* 
+      1) order 等于 order500.after(order200).after(orderNormal) 返回的匿名函数
+      2) 执行 order 函数并传入参数. self = order500.after(order200) 返回的匿名函数。
+      3) 进入匿名函数，匿名函数内部(self=order500 )
+        ret=order500.apply(this,arguents) (ret=nextSuccessor) 
+        进入 if 判断 return order200.apply(this,arguments) ,返回上级匿名函数  
+      3) ret=nextSuccess  执行orderNormal.apply(this,arguments) 
+      4) 根据条件判断返回 普通用户，无优惠券   
+    */
+
+
+
+    var Chain = function (fn) {
+      this.fn = fn
+      this.successor = null
+    }
+    // 指定在链中的下一个节点
+    Chain.prototype.setSuccessor = function (successor) {
+      this.successor = successor
+    }
+    // 传递请求给某个节点
+    Chain.prototype.passRequest = function () {
+      var ret = this.fn.apply(this, arguments)
+      if (ret === 'nextSuccessor') {
+        return this.successor && this.successor.passRequest.apply(this.successor, arguments)
+      }
+      return ret;
+    }
+    var chainOrder500 = new Chain(order500);
+    var chainOrder200 = new Chain(order200);
+    var chainOrderNormal = new Chain(orderNormal);
+    chainOrder500.setSuccessor(chainOrder200)
+    chainOrder200.setSuccessor(chainOrderNormal)
+    chainOrder500.passRequest(1, false, 100)
+  </script>
+</body>
+
+</html>

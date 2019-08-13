@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>对象池</title>
+</head>
+
+<body>
+  <script>
+    // 1.创建工厂 
+    var objectPoolFactory = (function (createObjFn) {
+      var objPool = [];
+      return {
+        create: function () {
+          return objPool.length == 0 ? createObjFn.apply(this, arguments) : objPool.shift();
+        },
+        resolve: function (dom) {
+          objPool.push(dom)
+        }
+      }
+    })
+    // 创建iframe工厂
+    var iframeFactory = objectPoolFactory(function () {
+      var iframe = document.createElement('iframe')
+      document.body.append(iframe);
+      iframe.onload = function () {
+        iframe.onload = null;
+        iframeFactory.resolve(iframe)
+      }
+      return iframe;
+    })
+    var iframe1 = iframeFactory.create();
+    iframe1.src = "http://www.processon.com"
+    var iframe2 = iframeFactory.create();
+    iframe2.src = 'http://www.baidu.com'
+  </script>
+</body>
+
+</html>

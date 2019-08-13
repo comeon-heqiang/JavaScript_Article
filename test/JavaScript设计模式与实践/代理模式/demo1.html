@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>代理模式</title>
+</head>
+
+<body>
+  <script>
+    var Flower = function () {
+
+    }
+    var xiaoming = {
+      sendFlower: function (target) {
+
+        console.log('让B代替送花')
+        target.receiveFlower()
+      }
+    }
+    var B = {
+      receiveFlower: function (flower) {
+        console.log('B代替小明送花')
+        A.listenGoodMood(function () {
+          var flower = new Flower;
+          A.receiveFlower(flower)
+        })
+
+      }
+    }
+    var A = {
+      receiveFlower: function (flower) {
+        console.log('收到花了' + flower)
+      },
+      listenGoodMood: function (fn) {
+        setTimeout(() => {
+          fn()
+        }, 3000);
+      }
+    }
+    xiaoming.sendFlower(B)
+
+    // 图片预加载
+    var myImage = (function () {
+      var imgNode = new Image();
+      document.body.append(imgNode)
+      return function (src) {
+          imgNode.src = src        
+      }
+    })()
+    var proxyImg = (function () {
+      var img = new Image()
+      img.onload = function () {
+        myImage(this.src)
+      }
+      return {
+        setSrc: function (src) {
+          myImage('http://img.zcool.cn/community/01af1f568cd3796ac725bb5c8fdd8e.gif')
+          img.src=src
+        }
+      }
+    })()
+    proxyImg.setSrc('./images/120728a3237qmw2c1k2y3k.jpg')
+    log('123')
+    function log(str){
+      console.log(str)
+    }
+  </script>
+</body>
+
+</html>

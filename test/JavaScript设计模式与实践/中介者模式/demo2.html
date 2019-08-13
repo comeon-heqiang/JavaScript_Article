@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>中介者模式</title>
+</head>
+
+<body>
+  选择颜色: <select id="colorSelect">
+    <option value="">请选择</option>
+    <option value="red">红色</option>
+    <option value="blue">蓝色</option>
+  </select>
+  选择内存: <select id="memorySelect">
+    <option value="">请选择</option>
+    <option value="32G">32G</option>
+    <option value="16G">16G</option>
+  </select>
+  输入购买数量: <input type="text" id="numberInput" /><br />
+  您选择了颜色: <div id="colorInfo"></div><br />
+  您选择了内存: <div id="memoryInfo"></div><br />
+  您输入了数量: <div id="numberInfo"></div><br />
+  <button id="nextBtn" disabled="true">请选择手机颜色和购买数量</button>
+  <script>
+    const {
+      log
+    } = console;
+
+    var goods = { // 手机库存
+      "red|32G": 3, // 颜色 red，内存 32G，cpu800，对应库存数量为 3 
+      "red|16G": 0,
+      "blue|32G": 1,
+      "blue|16G": 6
+    };
+    colorSelect.onchange = function () {
+      mediator.changed(this)
+    }
+    memorySelect.onchange = function () {
+      mediator.changed(this)
+    }
+    numberInput.onchange = function () {
+      mediator.changed(this)
+    }
+    // 中介者
+    var mediator = (function () {
+      var colorSelect = document.getElementById('colorSelect'),
+        numberInput = document.getElementById('numberInput'),
+        memorySelect = document.getElementById('memorySelect'),
+        memoryInfo = document.getElementById('memoryInfo'),
+        colorInfo = document.getElementById('colorInfo'),
+        numberInfo = document.getElementById('numberInfo'),
+        nextBtn = document.getElementById('nextBtn'),
+        index=10;
+      return {
+        changed: function (obj) {
+          var color = colorSelect.value,
+            memory = memorySelect.value,
+            number = numberInput.value,
+            stock = goods[color + '|' + memory];
+          if (obj === colorSelect) {
+            colorInfo.innerHTML = color
+          } else if (obj === memorySelect) {
+            memoryInfo.innerHTML = memory
+          }else if (obj === numberInput) {
+            numberInfo.innerHTML = number
+          }
+          if (!color) {
+            nextBtn.disabled = true;
+            nextBtn.innerHTML = '请选择颜色'
+            return
+          }
+          if (!memorySelect.value) {
+            nextBtn.disabled = true;
+            nextBtn.innerHTML = '请选择内存'
+            return
+          }
+          if (((number - 0) | 0) !== number-0) {
+            nextBtn.disabled = true;
+            nextBtn.innerHTML = '请输入正确的数量'
+            return
+          }
+          nextBtn.disabled = false;
+          nextBtn.innerHTML = '放入购物车'
+        }
+      }
+    })()
+  </script>
+</body>
+
+</html>

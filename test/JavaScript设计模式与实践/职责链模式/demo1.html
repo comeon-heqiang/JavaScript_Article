@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>职责链模式</title>
+</head>
+
+<body>
+  <script>
+    const {
+      log
+    } = console
+    // 500元定金用户购买
+    var order500 = function (orderType, pay, stock) {
+      if (orderType === 1 && pay === true) {
+        log('500定金预购，得到100元优惠券')
+      }
+      else{
+        order200(orderType,pay,stock)
+      }
+    }
+    // 200元定金用户购买
+    var order200=function (orderType, pay, stock) {
+      if (orderType === 2 && pay === true) {
+        log('200定金预购，得到50元优惠券')
+      }
+      else{
+        orderNormal(orderType,pay,stock)
+      }
+    }
+    // 普通购买
+    var orderNormal=function(orderType,pay,stock){
+      if(stock>0){
+        log('普通购买,无优惠券')
+      }
+      else{
+        log('库存不足')
+      }
+    }
+    order500(1,true,100)
+    order500(1,false,100)
+    order500(2,true,100)
+    order500(3,false,100)
+    order500(3,false,0)
+
+    
+  </script>
+</body>
+
+</html>

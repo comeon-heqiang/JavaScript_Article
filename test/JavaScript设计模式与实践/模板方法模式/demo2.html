@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>模板方法模式</title>
+</head>
+
+<body>
+
+  <script>
+    const {
+      log
+    } = console;
+    var Beverage = function (param) {
+      var boilWater = function () {
+        log('把水煮沸')
+      }
+      // 把沸水倒入饮料
+      var brew = param.brew || function () {
+        throw new Error('必须重写方法')
+      }
+      // 把饮料倒入杯子
+      var pourInCup = param.pourInCup || function () {
+        throw new Error('必须重写方法')
+      }
+      // 添加配料
+      var addCondiments = param.addCondiments || function () {
+        throw new Error('必须重写方法')
+      }
+      var F = function () {}
+      F.prototype.init = function () {
+        boilWater();
+        brew();
+        pourInCup();
+        addCondiments()
+      }
+      return F;
+    }
+    var Coffee = Beverage({
+      brew: function () {
+        log('沸水倒入咖啡')
+      },
+      pourInCup: function () {
+        log('咖啡倒入杯子')
+      },
+      addCondiments: function () {
+        log('加入糖和牛奶')
+      }
+    })
+    var coffee1 = new Coffee();
+    coffee1.init();
+  </script>
+</body>
+
+</html>

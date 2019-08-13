@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>JavaScript开发与实践</title>
+</head>
+
+<body>
+  <button id="btn_open">打开电视机</button>
+  <button id="btn_close">关闭电视机</button>
+  <div id="div1">惰性函数</div>
+  <script>
+    // 闭包应用
+    var mult = (function () {
+      var cache = {}
+      return function () {
+        var key = Array.prototype.join.call(arguments, ',')
+        var sum = 1;
+        if (cache[key]) {
+          console.log('已存在缓存中')
+          return cache[key]
+        }
+        for (var i = 0, l = arguments.length; i < l; i++) {
+          sum *= arguments[i]
+        }
+        return cache[key] = sum
+      }
+    })()
+
+    // console.log(mult(1, 2, 3))
+    // console.log(mult(1, 2, 3))
+    var TV = {
+      open() {
+        console.log('打开电视机')
+      },
+      close() {
+        console.log('关闭电视机')
+      }
+    }
+    var createCommend = function (revice) {
+      this.revice = revice
+    }
+    createCommend.prototype.execute = function () {
+      this.revice.open()
+    }
+    createCommend.prototype.undo = function () {
+      this.revice.close()
+    }
+    var setCommend = function (obj) {
+      document.getElementById('btn_open').onclick = function () {
+        obj.execute()
+      }
+      document.getElementById('btn_close').onclick = function () {
+        obj.undo()
+      }
+    }
+    setCommend(new createCommend(TV))
+
+    var append = function (callback) {
+      for (var i = 0; i < 10; i++) {
+        var div = document.createElement('div')
+        div.innerText = i
+        document.body.append(div)
+        if (typeof callback === 'function') {
+          callback(div)
+        }
+      }
+    }
+    append(function (node) {
+      node.style.display = 'none'
+    })
+
+    var Type = {}
+    for (var i = 0, type; type = ['String', 'Number', 'Array'][i++];) {
+      (function (type) {
+        Type[`is${type}`] = function (obj) {
+          return Object.prototype.toString.call(obj) === `[object ${type}]`
+        }
+      })(type)
+    }
+    console.log(Type.isArray([])) //true
+    console.log(Type.isString('123')) //true
+    console.log(Type.isNumber(1)) //true    
+
+    // 单例模式
+    var getSinger = function (fn) {
+      var ret;
+      return function () {
+        return ret || (ret = fn.apply(this, arguments))
+      }
+    }
+    var getScript = getSinger(function () {
+      return document.createElement("script")
+    })
+    var script1 = getScript()
+    var script2 = getScript()
+    console.log(script1 === script2, '单例模式')
+
+
+    // AOP 函数切入
+    Function.prototype.before = function (beforeFun) {
+      var self = this;
+      return function () {
+        beforeFun.apply(this, arguments)
+        return self.apply(this, arguments)
+      }
+
+    }
+    Function.prototype.after = function (afterFun) {
+      var self = this;
+      return function () {
+        var ret = self.apply(this, arguments)
+        afterFun.apply(this, arguments)
+        return ret
+      }
+    }
+    var func = function () {
+      console.log(2)
+    }
+    func = func.before(function () {
+      console.log(1)
+    }).after(function () {
+      console.log(3)
+    })
+    func()
+
+    //柯里化函数
+    var currying = function (fn) {
+      var arg = []
+      return function () {
+        if (arguments.length === 0) {
+          return fn.apply(this, arg)
+        } else {
+          // console.log(arguments);
+          [].push.apply(arg, arguments)
+          // arg.push(arguments[0])
+          return arguments.callee
+        }
+      }
+    }
+    var cost = (function () {
+      var money = 0;
+      return function () {
+        for (var i = 0; i < arguments.length; i++) {
+          money += arguments[i]
+        }
+        return money
+      }
+    })()
+    var cost = currying(cost); // 转化成 currying 函数
+    cost(100); // 未真正求值
+    cost(200); // 未真正求值
+    cost(300); // 未真正求值
+    console.log(cost(), 'curring'); // 求值并输出：600
+
+
+
+    // uncurring
+    Function.prototype.uncurring = function () {
+      var self = this;
+      return function () {
+        var obj = Array.prototype.shift.call(arguments)
+        return self.apply(obj, arguments)
+      }
+    }
+    var push = Array.prototype.push.uncurring();
+    (function () {
+      push(arguments, 4)
+      // console.log(arguments, 'uncurring')
+    })(1, 2, 3)
+
+
+    //函数节流
+    function throttle(fn, delay) {
+      var isFirst = true,
+        self = fn,
+        timer;
+      return function () {
+        var args = arguments,
+          _me = this;
+        if (isFirst) {
+          self.apply(_me, args)
+          return isFirst = false
+        }
+        if (timer) {
+          return false;
+        }
+        timer = setTimeout(() => {
+          clearTimeout(timer);
+          timer = null
+          self.apply(_me, args)
+        }, delay || 500)
+      }
+    }
+
+    window.onresize = throttle(function () {
+      console.log('函数节流')
+    }, 3000)
+
+    // 分时函数
+    var timerChunk = function (arr, fn, count, delay) {
+      var obj,
+        t;
+      var start = function () {
+        for (var i = 0, l = Math.min(count || 1, arr.length); i < l; i++) {
+          obj = arr.shift()
+          fn(obj)
+        }
+      }
+      return function () {
+        t = setInterval(() => {
+          if (arr.length === 0) {
+            return clearInterval(t)
+          }
+          start()
+        }, delay || 300);
+      }
+    }
+    var arr = []
+    for (var i = 0; i < 100; i++) {
+      arr.push(i)
+    }
+
+    var rendList = timerChunk(arr, function (i) {
+      var div = document.createElement('div')
+      div.innerText = i;
+      document.body.append(div)
+    }, 10, 500)
+    rendList()
+
+    var addEvent = function (elm, handle, type) {
+      if (window.addEventListener) {
+        addEvent = function (elm, type, hanle) {
+          elm.addEventListener(type, handle, false)
+        }
+      }
+      if (window.attachEvent) {
+        addEvent = function () {
+          elm.attachEvent('on' + type, handle)
+        }
+      }
+      // addEvent(elm, type, handle)
+    }
+    var div1 = document.getElementById('div1')
+    addEvent(div1, function () {
+      console.log(1)
+    }, 'click')
+  </script>
+</body>
+
+</html>
